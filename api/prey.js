@@ -19,9 +19,8 @@ module.exports = async (req, res) => {
       .sort((a, b) => b.av - a.av)
       .slice(0, POOL);
     const out = [];
-    let checked = 0;
-    for (let i = 0; i < rows.length; i += 40) {
-      await Promise.all(rows.slice(i, i + 40).map(async (w) => {
+    let checked = 0, failed = [];
+    const read = async (w) => {
         try {
           const c = await post({ type: 'clearinghouseState', user: w.addr });
           checked++;
@@ -33,9 +32,12 @@ module.exports = async (req, res) => {
             if (!(liq < mark)) continue;
             out.push({ addr: w.addr, name: w.name, av, month: w.month, all: w.all, coin: p.coin, szi, ntl, entry: +p.entryPx, mark, liq, lev: (p.leverage && p.leverage.value) || null, upnl: +p.unrealizedPnl, dist: (mark - liq) / mark });
           }
-        } catch (e) { /* skip this account */ }
-      }));
-    }
+        } catch (e) { failed.push(w); }
+    };
+    for (let i = 0; i < rows.length; i += 40) await Promise.all(rows.slice(i, i + 40).map(read));
+    // one retry, gentler, for accounts that failed (rate limits)
+    const retry = failed; failed = [];
+    for (let i = 0; i < retry.length; i += 10) await Promise.all(retry.slice(i, i + 10).map(read));
     out.sort((a, b) => a.dist - b.dist);
     res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate=600');
     res.setHeader('Access-Control-Allow-Origin', '*');
