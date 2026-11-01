@@ -1,1 +1,1 @@
-window.VULTURE_CFG={NAME:"VULTURE",TICKER:"VULTURE",CA:"",CHAIN:"solana",PAD:"pump.fun",PAIR:"",X:"",BUY:"",CHART:"",HL:""};
+window.VULTURE_CFG={NAME:"VULTURE",TICKER:"VULTURE",CA:"BUjNTrGvEoVXkL5i5h3m1Ao94xn22WHvG7E2XbhCpump",CHAIN:"solana",PAD:"pump.fun",PAIR:"",X:"https://x.com/vulturewallet",BUY:"https://pump.fun/coin/BUjNTrGvEoVXkL5i5h3m1Ao94xn22WHvG7E2XbhCpump",CHART:"https://gmgn.ai/sol/token/BUjNTrGvEoVXkL5i5h3m1Ao94xn22WHvG7E2XbhCpump",HL:""};
